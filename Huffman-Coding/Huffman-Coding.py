@@ -65,6 +65,7 @@ def getCodes(MNode):
     return MNode
 
 def toInfo_helper(MNode):
+    """function returns a 2D list with a character in 1-st position and a code in second"""
     global info
     if not MNode:
         pass
@@ -76,6 +77,7 @@ def toInfo_helper(MNode):
     return info
 
 def toInfo(info, MNode):
+    """function takes the list from toInfo_helper() function and adds that information to the main info_sequence dictionary"""
     for i in toInfo_helper(MNode):
         info[i[0]][1] = i[1][::-1]
     return info
@@ -90,6 +92,7 @@ class Node:
         self.code = ""
 
 def listOfNodes(info):
+    """function returns a list of objects of class Node"""
     listNodes = list()
     for k, v in info.items():
         listNodes.append(Node(v[0], k))
@@ -101,18 +104,20 @@ def CalcHuffman(info):
         sum += v[0] * len(v[1])
     return sum
 
-sequence = "aaaaabbbbbbbbbbbbbbbffffffffffkkzzz".replace(" ", "")
-sequence_info = FrequencyCalc(sequence)
 
-listaWezlow = listOfNodes(sequence_info)
+sequence = ""
+with open('dane.txt', 'r') as f:
+    for line in f:
+        sequence += line.strip()
 
 
-# listaWezlow = [Node(23, "a"), Node(2, "b"), Node(3, "k")]
-listaWezlow = CreateTree(listaWezlow)
-listaWezlow[0] = SetCodes(listaWezlow[0])
-listaWezlow[0] = getCodes(listaWezlow[0])
+sequence_info = FrequencyCalc(sequence) #write down basic information to the dictionary like character and frequency
+listaWezlow = listOfNodes(sequence_info) #Create a list of Nodes
+listaWezlow = CreateTree(listaWezlow) #Creates a Tree
+listaWezlow[0] = SetCodes(listaWezlow[0]) #set codes 0 for left chiled 1 for right chiled
+listaWezlow[0] = getCodes(listaWezlow[0]) #walk through the Tree and combine Parent and children codes
 info = list()
-sequence_info = toInfo(sequence_info, listaWezlow[0])
+sequence_info = toInfo(sequence_info, listaWezlow[0]) #and all colected information like codes to the main dictionary sequence_info
 printHuffman(sequence_info)
 
 print("Huffmana - ", CalcHuffman(sequence_info))
